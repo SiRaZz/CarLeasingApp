@@ -1,8 +1,11 @@
 package DanskeBank.persistance;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @Entity
 @Table(name = "VEHICLE_DETAILS")
 public class VehicleDetails {
@@ -32,69 +35,4 @@ public class VehicleDetails {
 
     @Column(name = "ENGINE_POWER")
     private Long enginePower;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getVinNumber() {
-        return vinNumber;
-    }
-
-    public void setVinNumber(String vinNumber) {
-        this.vinNumber = vinNumber;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public Date getProductionDate() {
-        return productionDate;
-    }
-
-    public void setProductionDate(Date productionDate) {
-        this.productionDate = productionDate;
-    }
-
-    public double getCarPrice() {
-        return carPrice;
-    }
-
-    public void setCarPrice(double carPrice) {
-        this.carPrice = carPrice;
-    }
-
-    public boolean isNewCar() {
-        return newCar;
-    }
-
-    public void setNewCar(boolean newCar) {
-        this.newCar = newCar;
-    }
-
-    public Long getEnginePower() {
-        return enginePower;
-    }
-
-    public void setEnginePower(Long enginePower) {
-        this.enginePower = enginePower;
-    }
 }

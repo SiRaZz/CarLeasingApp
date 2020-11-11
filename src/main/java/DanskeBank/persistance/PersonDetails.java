@@ -1,7 +1,10 @@
 package DanskeBank.persistance;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "PERSON_DETAILS")
 public class PersonDetails {
@@ -11,35 +14,19 @@ public class PersonDetails {
     @Column(name = "Id")
     private Long id;
 
+    @Column(name = "PERSON_CODE")
+    private String personCode;
+
+    @Column(name = "FIRST_NAME")
+    private String firstName;
+
+    @Column(name = "LAST_NAME")
+    private String lastName;
+
+    @Column(name = "WORK_PLACE")
+    private String workPlace;
+
     @Column(name = "MONTHLY_INCOME")
     private double monthlyIncome;
 
-    private PersonDetails coApplicantPerson;
-
-    public PersonDetails() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public double getMonthlyIncome() {
-        return monthlyIncome;
-    }
-
-    public void setMonthlyIncome(double monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
-    }
-
-    public PersonDetails getCoApplicantPerson() {
-        return coApplicantPerson;
-    }
-
-    public void setCoApplicantPerson(PersonDetails coApplicantPerson) {
-        this.coApplicantPerson = coApplicantPerson;
-    }
 }
