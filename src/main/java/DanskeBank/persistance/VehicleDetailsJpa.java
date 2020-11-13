@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "VEHICLE_DETAILS")
-public class VehicleDetails {
+public class VehicleDetailsJpa {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

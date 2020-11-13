@@ -3,9 +3,6 @@ package DanskeBank.dto;
 import DanskeBank.enums.LeasingApplicationRuleType;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.Date;
 
 @Data
@@ -15,7 +12,7 @@ public class LeasingApplicationRule {
 
     private String ruleName;
 
-    private LeasingApplicationRuleType leasingApplicationRule;
+    private LeasingApplicationRuleType leasingApplicationRuleType;
 
     private String value;
 

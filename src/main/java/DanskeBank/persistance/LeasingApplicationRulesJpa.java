@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Table(name = "LEASING_APPLICATION_RULES")
-public class LeasingApplicationRules {
+public class LeasingApplicationRulesJpa {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -25,11 +25,14 @@ public class LeasingApplicationRules {
 
     @Column(name = "RULE_TYPE")
     @Enumerated(EnumType.STRING)
-    private LeasingApplicationRuleType leasingApplicationRule;
+    private LeasingApplicationRuleType leasingApplicationRuleType;
 
     @Column(name = "VALUE")
     private String value;
 
     @Column(name = "VALID_TO")
     private Date validTo;
+
+    @Column(name = "UPDATE_DATE")
+    private Date updateDate;
 }

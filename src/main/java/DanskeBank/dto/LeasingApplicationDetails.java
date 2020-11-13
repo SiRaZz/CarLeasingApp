@@ -14,8 +14,6 @@ public class LeasingApplicationDetails {
 
     private double initialPayment;
 
-    private double monthlyPaymentAmount;
-
     private LeasingApplicationStatusEnum status;
 
     private VehicleDetails vehicleDetails;

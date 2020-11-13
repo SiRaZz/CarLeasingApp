@@ -37,13 +37,19 @@ public class LeasingApplicationDetailsJpa {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_details_id", referencedColumnName = "id")
-    private VehicleDetails vehicleDetails;
+    private VehicleDetailsJpa vehicleDetails;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_details_id", referencedColumnName = "id")
-    private PersonDetails personDetails;
+    @Column(name = "PERSON_DETAILS_ID")
+    private Long personDetailsId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "coApplicant_details_id", referencedColumnName = "id")
-    private PersonDetails coApplicantDetails;
+    @Column(name = "CO_APPLICANT_DETAILS_ID")
+    private Long coApplicantDetailsId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PERSON_DETAILS_ID", insertable = false, updatable = false)
+    private PersonDetailsJpa personDetails;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CO_APPLICANT_DETAILS_ID", insertable = false, updatable = false)
+    private PersonDetailsJpa coApplicantDetails;
 }
