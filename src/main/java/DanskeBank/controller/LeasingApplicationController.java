@@ -36,9 +36,13 @@ public class LeasingApplicationController {
     }
 
     @PostMapping("/updateRule")
-    public ResponseEntity<?> updateLeasingApplicationRule(@RequestBody LeasingApplicationRule rule) throws RuleNotFoundException {
-        rulesService.updateRule(rule);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public LeasingApplicationRule updateLeasingApplicationRule(@RequestBody LeasingApplicationRule rule) throws RuleNotFoundException {
+        return rulesService.updateRule(rule);
+    }
+
+    @GetMapping("/getLog")
+    public List<HttpTrace> getLogging()  {
+        return leasingApplicationService.getLog();
     }
 
 }

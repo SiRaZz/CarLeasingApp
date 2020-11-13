@@ -35,4 +35,12 @@ public class LeasingApplicationRulesJpa {
 
     @Column(name = "UPDATE_DATE")
     private Date updateDate;
+
+    public LeasingApplicationRulesJpa(String ruleName, LeasingApplicationRuleType leasingApplicationRuleType, String value, Date validTo, Date updateDate) {
+        this.ruleName = ruleName;
+        this.leasingApplicationRuleType = leasingApplicationRuleType;
+        this.value = value;
+        this.validTo = validTo;
+        this.updateDate = updateDate;
+    }
 }
