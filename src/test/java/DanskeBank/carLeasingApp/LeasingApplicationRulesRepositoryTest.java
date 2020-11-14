@@ -1,8 +1,6 @@
 package DanskeBank.carLeasingApp;
 
-import DanskeBank.dto.LeasingApplicationRule;
 import DanskeBank.enums.LeasingApplicationRuleType;
-import DanskeBank.enums.LeasingApplicationStatusEnum;
 import DanskeBank.exception.RuleNotFoundException;
 import DanskeBank.persistance.LeasingApplicationRulesJpa;
 import DanskeBank.repository.LeasingApplicationRulesRepository;
@@ -11,12 +9,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Date;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -34,8 +32,9 @@ public class LeasingApplicationRulesRepositoryTest {
     @Test
     public void should_save_rule() {
 
-        LeasingApplicationRulesJpa jpa = rulesRepository.save(
-                new LeasingApplicationRulesJpa("minimumIncome1", LeasingApplicationRuleType.String, "100",null,null));
+        LeasingApplicationRulesJpa jpa = rulesRepository.save(LeasingApplicationRulesJpa.builder().ruleName("minimumIncome1")
+                        .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").updateDate(null).validTo(null).build());
+
 
         Assertions.assertThat(jpa).hasFieldOrPropertyWithValue("ruleName", "minimumIncome1");
         Assertions.assertThat(jpa).hasFieldOrPropertyWithValue("leasingApplicationRuleType", LeasingApplicationRuleType.String);
@@ -46,7 +45,8 @@ public class LeasingApplicationRulesRepositoryTest {
 
     @Test
     public void should_find_tutorial_rule_by_name() {
-        LeasingApplicationRulesJpa rule1 = new LeasingApplicationRulesJpa("minimumIncome1", LeasingApplicationRuleType.String, "100",null,null);
+        LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("minimumIncome1")
+                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").updateDate(null).validTo(null).build();
         entityManager.persist(rule1);
 
         LeasingApplicationRulesJpa foundRule = rulesRepository.findByRuleName(rule1.getRuleName());
@@ -55,8 +55,9 @@ public class LeasingApplicationRulesRepositoryTest {
     }
 
     @Test
-    public void should_not_find_tutorial_rule_by_name() {
-        LeasingApplicationRulesJpa rule1 = new LeasingApplicationRulesJpa("minimumIncome1", LeasingApplicationRuleType.String, "100",null,null);
+    public void should_not_find_rule_by_name_ant_throw() {
+        LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("minimumIncome1")
+                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").updateDate(null).validTo(null).build();
         entityManager.persist(rule1);
 
         exception.expect(RuleNotFoundException.class);
@@ -67,10 +68,12 @@ public class LeasingApplicationRulesRepositoryTest {
 
     @Test
     public void should_update_rule_by_name() {
-        LeasingApplicationRulesJpa rule1 = new LeasingApplicationRulesJpa("minimumIncome1", LeasingApplicationRuleType.String, "100",null,null);
+        LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("minimumIncome1")
+                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").updateDate(null).validTo(null).build();
         entityManager.persist(rule1);
 
-        LeasingApplicationRulesJpa updatedRule1 = new LeasingApplicationRulesJpa("minimumIncome1", LeasingApplicationRuleType.String, "1000",null,new Date());
+        LeasingApplicationRulesJpa updatedRule1 = LeasingApplicationRulesJpa.builder().ruleName("minimumIncome1")
+                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("1000").updateDate(null).validTo(null).build();
 
         LeasingApplicationRulesJpa foundRule = rulesRepository.findByRuleName(rule1.getRuleName());
         foundRule.setValue(updatedRule1.getValue());

@@ -10,8 +10,6 @@ import java.util.Date;
 
 @Data
 @Entity
-@Getter
-@Setter
 @Table(name = "LOGS")
 public class LogJpa {
 

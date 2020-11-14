@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 
 @Component
@@ -45,7 +46,7 @@ public class LeasingApplicationRulesServiceImpl implements LeasingApplicationRul
             return modelMapper.map(applicationRule, LeasingApplicationRule.class);
         } else {
             log.info("Rule with name {} not found or value not changed, skipping", rule.getRuleName());
-            throw new RuleNotFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.ruleNotFound", null,null));
+            throw new RuleNotFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.ruleNotFound", null, Locale.getDefault()));
         }
     }
 }

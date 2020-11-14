@@ -1,17 +1,15 @@
 package DanskeBank.persistance;
 
 import DanskeBank.enums.LeasingApplicationRuleType;
+import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
 @Entity
-@Getter
-@Setter
+@Builder
 @Table(name = "LEASING_APPLICATION_RULES")
 public class LeasingApplicationRulesJpa {
 
@@ -35,12 +33,4 @@ public class LeasingApplicationRulesJpa {
 
     @Column(name = "UPDATE_DATE")
     private Date updateDate;
-
-    public LeasingApplicationRulesJpa(String ruleName, LeasingApplicationRuleType leasingApplicationRuleType, String value, Date validTo, Date updateDate) {
-        this.ruleName = ruleName;
-        this.leasingApplicationRuleType = leasingApplicationRuleType;
-        this.value = value;
-        this.validTo = validTo;
-        this.updateDate = updateDate;
-    }
 }

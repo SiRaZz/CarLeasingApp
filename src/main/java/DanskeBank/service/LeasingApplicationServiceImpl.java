@@ -1,5 +1,6 @@
 package DanskeBank.service;
 
+import DanskeBank.component.LoggingComponent;
 import DanskeBank.dto.ApplicationResponse;
 import DanskeBank.dto.LeasingApplicationDetails;
 import DanskeBank.dto.LeasingApplicationRule;
@@ -7,11 +8,11 @@ import DanskeBank.dto.VehicleDetails;
 import DanskeBank.enums.LeasingApplicationStatusEnum;
 import DanskeBank.exception.LeasingApplicationFoundException;
 import DanskeBank.exception.PersonNotFoundException;
+import DanskeBank.exception.RuleNotFoundException;
 import DanskeBank.persistance.LeasingApplicationDetailsJpa;
 import DanskeBank.persistance.PersonDetailsJpa;
 import DanskeBank.persistance.VehicleDetailsJpa;
 import DanskeBank.repository.LeasingApplicationRepository;
-import DanskeBank.component.LoggingComponent;
 import DanskeBank.repository.PersonDetailsRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -56,18 +58,22 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
 
     @Override
     public ApplicationResponse submit(LeasingApplicationDetails applicationDetails) {
-        df.setRoundingMode(RoundingMode.UP);
-        LeasingApplicationRule rule = rulesService.getRule("minimumIncome");
-        validateLeasingApplication(applicationDetails);
-        LeasingApplicationDetailsJpa details = validateDetails(applicationDetails, rule);
-        details.setMonthlyPaymentAmount(Double.parseDouble(df.format((details.getVehicleDetails().getCarPrice() - details.getInitialPayment()) / details.getLeasingPeriod())));
-        leasingApplicationRepository.save(details);
-        log.info("Leasing application with id={} submitted", details.getId());
-        return new ApplicationResponse(modelMapper.map(details.getVehicleDetails(), VehicleDetails.class), details.getStatus());
+        df.setRoundingMode(RoundingMode.UP);LeasingApplicationRule rule = rulesService.getRule("minimumIncome");
+        if (rule != null) {
+            validateLeasingApplication(applicationDetails);
+            LeasingApplicationDetailsJpa details = validateDetails(applicationDetails, rule);
+            details.setMonthlyPaymentAmount(Double.parseDouble(df.format((details.getVehicleDetails().getCarPrice() - details.getInitialPayment()) / details.getLeasingPeriod())));
+            leasingApplicationRepository.save(details);
+            log.info("Leasing application with id={} submitted", details.getId());
+            return new ApplicationResponse(modelMapper.map(details.getVehicleDetails(), VehicleDetails.class), details.getStatus());
+        } else {
+            throw new RuleNotFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.ruleNotFound", null, Locale.getDefault()));
+        }
     }
 
     @Override
-    public List<LeasingApplicationDetails> getApplicationStatusByPersonCode(String personCode) throws PersonNotFoundException, LeasingApplicationFoundException {
+    public List<LeasingApplicationDetails> getApplicationStatusByPersonCode(String personCode) throws
+            PersonNotFoundException, LeasingApplicationFoundException {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         PersonDetailsJpa personDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(personCode);
         if (personDetails != null) {
@@ -78,10 +84,10 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
                         .map(d -> modelMapper.map(d, LeasingApplicationDetails.class))
                         .collect(Collectors.toList());
             } else {
-                throw new LeasingApplicationFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.null", null,null));
+                throw new LeasingApplicationFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.null", null, Locale.getDefault()));
             }
         } else {
-            throw new PersonNotFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.personNotFound", null, null));
+            throw new PersonNotFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.personNotFound", null, Locale.getDefault()));
         }
     }
 
@@ -96,12 +102,12 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
         Assert.notNull(applicationDetails.getVehicleDetails());
     }
 
-    private LeasingApplicationDetailsJpa validateDetails(LeasingApplicationDetails applicationDetails, LeasingApplicationRule rule) {
-        LeasingApplicationDetailsJpa details = new LeasingApplicationDetailsJpa();
-        details.setInitialPayment(applicationDetails.getInitialPayment());
-        details.setInterestRate(applicationDetails.getInterestRate());
-        details.setLeasingPeriod(applicationDetails.getLeasingPeriod());
-        details.setVehicleDetails(modelMapper.map(applicationDetails.getVehicleDetails(), VehicleDetailsJpa.class));
+    private LeasingApplicationDetailsJpa validateDetails(LeasingApplicationDetails
+                                                                 applicationDetails, LeasingApplicationRule rule) {
+        LeasingApplicationDetailsJpa details = LeasingApplicationDetailsJpa.builder().initialPayment(applicationDetails.getInitialPayment())
+                .interestRate(applicationDetails.getInterestRate())
+                .leasingPeriod(applicationDetails.getLeasingPeriod())
+                .vehicleDetails(modelMapper.map(applicationDetails.getVehicleDetails(), VehicleDetailsJpa.class)).build();
         PersonDetailsJpa personDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(applicationDetails.getPersonDetails().getPersonCode());
         PersonDetailsJpa coApplicantDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(applicationDetails.getCoApplicantDetails().getPersonCode());
         if (applicationDetails.getPersonDetails().getMonthlyIncome() + applicationDetails.getCoApplicantDetails().getMonthlyIncome() >= Double.parseDouble(rule.getValue())) {
