@@ -38,11 +38,11 @@ public class LeasingApplicationRulesServiceImpl implements LeasingApplicationRul
 
     @Override
     public LeasingApplicationRule updateRule(LeasingApplicationRule rule) throws RuleNotFoundException {
-        LeasingApplicationRulesJpa applicationRule = leasingApplicationRulesRepository.findByRuleName(rule.getRuleName());
+        var applicationRule = leasingApplicationRulesRepository.findByRuleName(rule.getRuleName());
         if (applicationRule != null && (!applicationRule.getValue().equals(rule.getValue()))) {
             applicationRule.setValue(rule.getValue());
             applicationRule.setUpdateDate(new Date());
-            leasingApplicationRulesRepository.saveAndFlush(applicationRule);
+            leasingApplicationRulesRepository.save(applicationRule);
             return modelMapper.map(applicationRule, LeasingApplicationRule.class);
         } else {
             log.info("Rule with name {} not found or value not changed, skipping", rule.getRuleName());

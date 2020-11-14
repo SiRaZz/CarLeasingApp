@@ -26,6 +26,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
@@ -53,13 +54,13 @@ public class LeasingApplicationServiceTest {
     @MockBean
     private LeasingApplicationRepository leasingApplicationRepository;
 
-    @MockBean
+    @Autowired
     private PersonDetailsRepository personDetailsRepository;
 
     @MockBean
     private LoggingComponent loggingComponent;
 
-    @MockBean
+    @Autowired
     ModelMapper modelMapper;
 
     @Rule
@@ -74,10 +75,17 @@ public class LeasingApplicationServiceTest {
 
     }
 
-    private LeasingApplicationDetails createTestData() {
-        LeasingApplicationDetails detail = new LeasingApplicationDetails();
+    @Test
+    public void should_save_application() {
+        LeasingApplicationDetails jpa = createTestData();
+        Assert.assertNotNull(leasingApplicationService.submit(jpa));
 
-        VehicleDetails vehicleDetails = new VehicleDetails();
+    }
+
+    private LeasingApplicationDetails createTestData() {
+        var detail = new LeasingApplicationDetails();
+
+        var vehicleDetails = new VehicleDetails();
         vehicleDetails.setCarPrice(10000);
         vehicleDetails.setEnginePower(100L);
         vehicleDetails.setManufacturer("BMW");
@@ -86,14 +94,14 @@ public class LeasingApplicationServiceTest {
         vehicleDetails.setProductionDate(new Date());
         vehicleDetails.setVinNumber("123456789");
 
-        PersonDetails personDetailsJpa = new PersonDetails();
+        var personDetailsJpa = new PersonDetails();
         personDetailsJpa.setFirstName("Jonas");
         personDetailsJpa.setLastName("Jonaitis");
         personDetailsJpa.setMonthlyIncome(1500);
         personDetailsJpa.setPersonCode("39806101355");
         personDetailsJpa.setWorkPlace("UAB Lidl");
 
-        PersonDetails coApplicantDetails = new PersonDetails();
+        var coApplicantDetails = new PersonDetails();
         coApplicantDetails.setFirstName("Petras");
         coApplicantDetails.setLastName("Petraitis");
         coApplicantDetails.setMonthlyIncome(1000);

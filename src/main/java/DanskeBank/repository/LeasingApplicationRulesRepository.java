@@ -11,6 +11,4 @@ public interface LeasingApplicationRulesRepository extends JpaRepository<Leasing
      @Query("SELECT r FROM LeasingApplicationRulesJpa r WHERE r.validTo is null and r.ruleName = ?1")
      LeasingApplicationRulesJpa findByRuleName(String ruleName);
 
-
-
 }

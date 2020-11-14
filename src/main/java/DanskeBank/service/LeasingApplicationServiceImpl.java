@@ -10,9 +10,11 @@ import DanskeBank.exception.LeasingApplicationFoundException;
 import DanskeBank.exception.PersonNotFoundException;
 import DanskeBank.exception.RuleNotFoundException;
 import DanskeBank.persistance.LeasingApplicationDetailsJpa;
+import DanskeBank.persistance.LeasingApplicationRulesJpa;
 import DanskeBank.persistance.PersonDetailsJpa;
 import DanskeBank.persistance.VehicleDetailsJpa;
 import DanskeBank.repository.LeasingApplicationRepository;
+import DanskeBank.repository.LeasingApplicationRulesRepository;
 import DanskeBank.repository.PersonDetailsRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -48,7 +50,7 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
     private PersonDetailsRepository personDetailsRepository;
 
     @Autowired
-    private LeasingApplicationRulesService rulesService;
+    private LeasingApplicationRulesRepository rulesRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -58,10 +60,11 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
 
     @Override
     public ApplicationResponse submit(LeasingApplicationDetails applicationDetails) {
-        df.setRoundingMode(RoundingMode.UP);LeasingApplicationRule rule = rulesService.getRule("minimumIncome");
+        df.setRoundingMode(RoundingMode.UP);
+        var rule = rulesRepository.findByRuleName("minimumIncome");
         if (rule != null) {
             validateLeasingApplication(applicationDetails);
-            LeasingApplicationDetailsJpa details = validateDetails(applicationDetails, rule);
+            var details = validateDetails(applicationDetails, rule);
             details.setMonthlyPaymentAmount(Double.parseDouble(df.format((details.getVehicleDetails().getCarPrice() - details.getInitialPayment()) / details.getLeasingPeriod())));
             leasingApplicationRepository.save(details);
             log.info("Leasing application with id={} submitted", details.getId());
@@ -72,12 +75,11 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
     }
 
     @Override
-    public List<LeasingApplicationDetails> getApplicationStatusByPersonCode(String personCode) throws
-            PersonNotFoundException, LeasingApplicationFoundException {
+    public List<LeasingApplicationDetails> getApplicationStatusByPersonCode(String personCode) throws PersonNotFoundException, LeasingApplicationFoundException {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        PersonDetailsJpa personDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(personCode);
+        var personDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(personCode);
         if (personDetails != null) {
-            List<LeasingApplicationDetailsJpa> details = leasingApplicationRepository.findLeasingApplicationDetailsJpaByPersonDetailsId(personDetails.getId());
+            var details = leasingApplicationRepository.findLeasingApplicationDetailsJpaByPersonDetailsId(personDetails.getId());
             if (details != null) {
                 return details
                         .stream()
@@ -102,14 +104,14 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
         Assert.notNull(applicationDetails.getVehicleDetails());
     }
 
-    private LeasingApplicationDetailsJpa validateDetails(LeasingApplicationDetails
-                                                                 applicationDetails, LeasingApplicationRule rule) {
-        LeasingApplicationDetailsJpa details = LeasingApplicationDetailsJpa.builder().initialPayment(applicationDetails.getInitialPayment())
+    private LeasingApplicationDetailsJpa validateDetails(LeasingApplicationDetails applicationDetails, LeasingApplicationRulesJpa rule) {
+        var details = LeasingApplicationDetailsJpa.builder().initialPayment(applicationDetails.getInitialPayment())
                 .interestRate(applicationDetails.getInterestRate())
                 .leasingPeriod(applicationDetails.getLeasingPeriod())
                 .vehicleDetails(modelMapper.map(applicationDetails.getVehicleDetails(), VehicleDetailsJpa.class)).build();
-        PersonDetailsJpa personDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(applicationDetails.getPersonDetails().getPersonCode());
-        PersonDetailsJpa coApplicantDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(applicationDetails.getCoApplicantDetails().getPersonCode());
+
+        var personDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(applicationDetails.getPersonDetails().getPersonCode());
+        var coApplicantDetails = personDetailsRepository.findPersonDetailsJpaByPersonCode(applicationDetails.getCoApplicantDetails().getPersonCode());
         if (applicationDetails.getPersonDetails().getMonthlyIncome() + applicationDetails.getCoApplicantDetails().getMonthlyIncome() >= Double.parseDouble(rule.getValue())) {
             details.setStatus(LeasingApplicationStatusEnum.APPROVED);
         } else {

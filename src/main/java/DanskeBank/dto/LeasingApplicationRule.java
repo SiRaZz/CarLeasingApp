@@ -1,11 +1,13 @@
 package DanskeBank.dto;
 
 import DanskeBank.enums.LeasingApplicationRuleType;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
+@Builder
 public class LeasingApplicationRule {
 
     private Long id;
@@ -17,11 +19,4 @@ public class LeasingApplicationRule {
     private String value;
 
     private Date validTo;
-
-    public LeasingApplicationRule(String ruleName, LeasingApplicationRuleType leasingApplicationRuleType, String value, Date validTo) {
-        this.ruleName = ruleName;
-        this.leasingApplicationRuleType = leasingApplicationRuleType;
-        this.value = value;
-        this.validTo = validTo;
-    }
 }
