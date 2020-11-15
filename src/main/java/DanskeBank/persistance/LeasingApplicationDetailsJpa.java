@@ -1,16 +1,15 @@
 package DanskeBank.persistance;
 
 import DanskeBank.enums.LeasingApplicationStatusEnum;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "LEASING_APPLICATION_DETAILS")
 public class LeasingApplicationDetailsJpa {
 
