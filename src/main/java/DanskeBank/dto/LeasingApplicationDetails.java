@@ -1,9 +1,11 @@
 package DanskeBank.dto;
 
 import DanskeBank.enums.LeasingApplicationStatusEnum;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class LeasingApplicationDetails {
 
     private Long id;

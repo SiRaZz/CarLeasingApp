@@ -49,4 +49,9 @@ public class LeasingApplicationRulesServiceImpl implements LeasingApplicationRul
             throw new RuleNotFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.ruleNotFound", null, Locale.getDefault()));
         }
     }
+
+    @Override
+    public void deleteRuleByName(String ruleName) {
+        leasingApplicationRulesRepository.deleteRuleByName(ruleName);
+    }
 }

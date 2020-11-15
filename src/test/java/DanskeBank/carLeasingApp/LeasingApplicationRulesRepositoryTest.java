@@ -5,6 +5,7 @@ import DanskeBank.exception.RuleNotFoundException;
 import DanskeBank.persistance.LeasingApplicationRulesJpa;
 import DanskeBank.repository.LeasingApplicationRulesRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -44,7 +45,7 @@ public class LeasingApplicationRulesRepositoryTest {
     }
 
     @Test
-    public void should_find_tutorial_rule_by_name() {
+    public void should_find_rule_by_name() {
         LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("minimumIncome1")
                 .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").updateDate(null).validTo(null).build();
         entityManager.persist(rule1);
@@ -55,15 +56,10 @@ public class LeasingApplicationRulesRepositoryTest {
     }
 
     @Test
-    public void should_not_find_rule_by_name_ant_throw() {
-        LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("minimumIncome1")
-                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").updateDate(null).validTo(null).build();
-        entityManager.persist(rule1);
-
-        exception.expect(RuleNotFoundException.class);
+    public void should_not_find_rule_by_name() {
         LeasingApplicationRulesJpa foundRule = rulesRepository.findByRuleName("randomRule");
 
-
+        Assert.assertNull(foundRule);
     }
 
     @Test

@@ -10,4 +10,6 @@ public interface LeasingApplicationRulesService {
 
     LeasingApplicationRule updateRule(LeasingApplicationRule rule) throws RuleNotFoundException;
 
+    void deleteRuleByName (String ruleName);
+
 }
