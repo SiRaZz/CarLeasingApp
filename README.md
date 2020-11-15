@@ -7,14 +7,21 @@ The REST API to the example app is described below.
 
 ## Run the app
 
+Intellij needs Lombok plugin for correct working project
+https://plugins.jetbrains.com/plugin/6317-lombok
+
 Execute mvn goal:
     `mvn spring-boot:run`
+    
+## Run maven tests
+`mvn clean test`
+
 
 ## Submit new leasing application
 
 ### Request
 
-`POST /submit/`
+`POST /leasing/submit/`
 
 JSON example:
 
@@ -71,7 +78,7 @@ JSON example:
 
 ### Request
 
-`GET /getStatus/{personCode}`
+`GET /leasing/status/{personCode}`
 
 ### Response
 ```json
@@ -145,9 +152,13 @@ JSON example:
     ]
 ```
 
+## Get logs
+
+`POST /leasing/logs`
+
 ## Update rule by name
 
-`POST /updateRule`
+`POST /rules/updateRule`
 
 JSON example:
 
@@ -158,5 +169,37 @@ JSON example:
  "value" : "12",
  "validTo" : null
 }
+```
+## Save new rule
+
+`POST /rules/save`
+
+JSON example:
+
+```json
+{
+ "ruleName" : "minimumIncome"  ,
+ "leasingApplicationRuleType" : "String",
+ "value" : "12",
+ "validTo" : null
+}
+```
+## Delete rule by name
+
+`POST /rules/deleteRule/{ruleName}`
+
+### Response
 
 ```
+[
+    {
+        "id": 1,
+        "requestDate": "2020-11-15T18:38:03.228+00:00",
+        "method": "GET",
+        "url": "http://localhost:3892/rules/deleteRule/%7BminmumIncome%7D",
+        "responseStatus": 405
+    },
+```
+
+
+
