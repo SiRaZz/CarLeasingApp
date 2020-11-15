@@ -14,7 +14,5 @@ public interface LeasingApplicationService {
 
     List<LeasingApplicationDetails> getApplicationStatusByPersonCode(String personCode) throws PersonNotFoundException, LeasingApplicationFoundException;
 
-    List<HttpTrace> getLog();
-
 
 }

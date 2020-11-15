@@ -1,8 +1,8 @@
 package DanskeBank.service;
 
 import DanskeBank.dto.LeasingApplicationRule;
-import DanskeBank.exception.LeasingApplicationFoundException;
 import DanskeBank.exception.RuleNotFoundException;
+import DanskeBank.exception.SameRuleFoundException;
 import DanskeBank.persistance.LeasingApplicationRulesJpa;
 import DanskeBank.repository.LeasingApplicationRulesRepository;
 import org.modelmapper.ModelMapper;
@@ -34,6 +34,19 @@ public class LeasingApplicationRulesServiceImpl implements LeasingApplicationRul
     @Override
     public LeasingApplicationRule getRule(String ruleName) {
         return Optional.ofNullable(leasingApplicationRulesRepository.findByRuleName(ruleName)).map(rule -> modelMapper.map(rule, LeasingApplicationRule.class)).orElse(null);
+    }
+
+    @Override
+    public void saveRule(LeasingApplicationRule ruleDetails) {
+        var rule = leasingApplicationRulesRepository.findByRuleName(ruleDetails.getRuleName());
+        if(rule != null) {
+            if (!ruleDetails.getRuleName().equals(rule.getRuleName())) {
+                leasingApplicationRulesRepository.save(modelMapper.map(rule, LeasingApplicationRulesJpa.class));
+            } else {
+                throw new SameRuleFoundException(HttpStatus.BAD_REQUEST, messages.getMessage("leasingApplication.sameRuleFound", null, Locale.getDefault()));
+            }
+        }
+        leasingApplicationRulesRepository.save(modelMapper.map(ruleDetails, LeasingApplicationRulesJpa.class));
     }
 
     @Override

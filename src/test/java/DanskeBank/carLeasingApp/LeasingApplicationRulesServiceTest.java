@@ -4,25 +4,23 @@ import DanskeBank.CarLeasingAppApplication;
 import DanskeBank.dto.LeasingApplicationRule;
 import DanskeBank.enums.LeasingApplicationRuleType;
 import DanskeBank.exception.RuleNotFoundException;
+import DanskeBank.exception.SameRuleFoundException;
 import DanskeBank.persistance.LeasingApplicationRulesJpa;
 import DanskeBank.repository.LeasingApplicationRulesRepository;
 import DanskeBank.service.LeasingApplicationRulesService;
 import DanskeBank.service.LeasingApplicationRulesServiceImpl;
-import DanskeBank.service.LeasingApplicationService;
-import DanskeBank.service.LeasingApplicationServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
@@ -45,8 +43,11 @@ public class LeasingApplicationRulesServiceTest {
     @Autowired
     private LeasingApplicationRulesService rulesService;
 
-    @Autowired
+    @MockBean
     private LeasingApplicationRulesRepository rulesRepository;
+
+    @MockBean
+    ModelMapper modelMapper;
 
     @Test
     public void should_not_find_rule_by_name() {
@@ -55,22 +56,14 @@ public class LeasingApplicationRulesServiceTest {
     }
 
     @Test
-    public void should_not_find_rule_for_delete() {
-        LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("randomName")
-                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").validTo(null).build();
-        rulesRepository.save(rule1);
-        String name = "randomName1";
-        rulesService.deleteRuleByName(name);
-    }
-
-    @Test
     public void should_delete_rule_by_name() {
-        LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("randomName")
+        LeasingApplicationRule rule1 = LeasingApplicationRule.builder().ruleName("randomName")
                 .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").validTo(null).build();
-        rulesRepository.save(rule1);
+        rulesService.saveRule(rule1);
         String name = "randomName";
         rulesService.deleteRuleByName(name);
     }
+
 
     @Test
     public void should_throw_exception_updating_rule() {
@@ -83,14 +76,13 @@ public class LeasingApplicationRulesServiceTest {
 
     @Test
     public void should_save_rule() {
-        LeasingApplicationRulesJpa jpa = rulesRepository.save(LeasingApplicationRulesJpa.builder().ruleName("minimumIncome1")
-                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").updateDate(null).validTo(null).build());
+        LeasingApplicationRule rule1 = LeasingApplicationRule.builder().ruleName("minimumIncome1")
+                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").validTo(null).build();
+        rulesService.saveRule(rule1);
 
-
-        Assertions.assertThat(jpa).hasFieldOrPropertyWithValue("ruleName", "minimumIncome1");
-        Assertions.assertThat(jpa).hasFieldOrPropertyWithValue("leasingApplicationRuleType", LeasingApplicationRuleType.String);
-        Assertions.assertThat(jpa).hasFieldOrPropertyWithValue("value", "100");
-        Assertions.assertThat(jpa).hasFieldOrPropertyWithValue("validTo", null);
-        Assertions.assertThat(jpa).hasFieldOrPropertyWithValue("updateDate", null);
+        Assertions.assertThat(rule1).hasFieldOrPropertyWithValue("ruleName", "minimumIncome1");
+        Assertions.assertThat(rule1).hasFieldOrPropertyWithValue("leasingApplicationRuleType", LeasingApplicationRuleType.String);
+        Assertions.assertThat(rule1).hasFieldOrPropertyWithValue("value", "100");
+        Assertions.assertThat(rule1).hasFieldOrPropertyWithValue("validTo", null);
     }
 }

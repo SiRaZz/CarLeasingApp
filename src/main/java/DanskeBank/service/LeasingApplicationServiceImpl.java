@@ -1,10 +1,7 @@
 package DanskeBank.service;
 
 import DanskeBank.component.LoggingComponent;
-import DanskeBank.dto.ApplicationResponse;
-import DanskeBank.dto.LeasingApplicationDetails;
-import DanskeBank.dto.LeasingApplicationRule;
-import DanskeBank.dto.VehicleDetails;
+import DanskeBank.dto.*;
 import DanskeBank.enums.LeasingApplicationStatusEnum;
 import DanskeBank.exception.LeasingApplicationFoundException;
 import DanskeBank.exception.PersonNotFoundException;
@@ -15,6 +12,7 @@ import DanskeBank.persistance.PersonDetailsJpa;
 import DanskeBank.persistance.VehicleDetailsJpa;
 import DanskeBank.repository.LeasingApplicationRepository;
 import DanskeBank.repository.LeasingApplicationRulesRepository;
+import DanskeBank.repository.LoggingRepository;
 import DanskeBank.repository.PersonDetailsRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -44,7 +42,10 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
     private LeasingApplicationRepository leasingApplicationRepository;
 
     @Autowired
-    private LoggingComponent loggingRepository;
+    private LoggingComponent loggingComponent;
+
+    @Autowired
+    private LoggingRepository loggingRepository;
 
     @Autowired
     private PersonDetailsRepository personDetailsRepository;
@@ -91,11 +92,6 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
         } else {
             throw new PersonNotFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.personNotFound", null, Locale.getDefault()));
         }
-    }
-
-    @Override
-    public List<HttpTrace> getLog() {
-        return loggingRepository.findAll();
     }
 
     protected void validateLeasingApplication(LeasingApplicationDetails applicationDetails) {

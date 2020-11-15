@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder
 public class ApplicationResponse {
 
-    private final VehicleDetails vehicleDetails;
+    private VehicleDetails vehicleDetails;
 
-    private final LeasingApplicationStatusEnum status;
+    private LeasingApplicationStatusEnum status;
 }

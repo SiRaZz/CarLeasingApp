@@ -8,20 +8,20 @@ import lombok.Data;
 @Builder
 public class LeasingApplicationDetails {
 
-    private final Long id;
+    private Long id;
 
-    private final Long leasingPeriod;
+    private Long leasingPeriod;
 
-    private final double interestRate;
+    private double interestRate;
 
-    private final double initialPayment;
+    private double initialPayment;
 
-    private final LeasingApplicationStatusEnum status;
+    private LeasingApplicationStatusEnum status;
 
-    private final VehicleDetails vehicleDetails;
+    private VehicleDetails vehicleDetails;
 
-    private final PersonDetails personDetails;
+    private PersonDetails personDetails;
 
-    private final PersonDetails coApplicantDetails;
+    private PersonDetails coApplicantDetails;
 
 }

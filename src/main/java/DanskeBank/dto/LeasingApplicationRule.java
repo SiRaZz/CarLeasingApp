@@ -10,13 +10,13 @@ import java.util.Date;
 @Builder
 public class LeasingApplicationRule {
 
-    private final Long id;
+    private Long id;
 
-    private final String ruleName;
+    private String ruleName;
 
-    private final LeasingApplicationRuleType leasingApplicationRuleType;
+    private LeasingApplicationRuleType leasingApplicationRuleType;
 
-    private final String value;
+    private String value;
 
-    private final Date validTo;
+    private Date validTo;
 }

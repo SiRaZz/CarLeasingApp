@@ -29,11 +29,9 @@ public class LoggingComponent implements HttpTraceRepository  {
     @Override
     public void add(HttpTrace trace) {
         if (!trace.getRequest().getUri().toString().contains("h2-console")) {
-            LogJpa logJpa = new LogJpa();
-            logJpa.setRequestDate(Date.from(trace.getTimestamp()));
-            logJpa.setMethod(trace.getRequest().getMethod());
-            logJpa.setResponseStatus(trace.getResponse().getStatus());
-            logJpa.setUrl(trace.getRequest().getUri().toString());
+            LogJpa logJpa = LogJpa.builder().requestDate(Date.from(trace.getTimestamp()))
+                    .method(trace.getRequest().getMethod())
+                    .responseStatus(trace.getResponse().getStatus()).url(trace.getRequest().getUri().toString()).build();
             loggingRepository.save(logJpa);
         }
     }
