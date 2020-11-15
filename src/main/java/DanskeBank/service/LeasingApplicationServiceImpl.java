@@ -68,7 +68,7 @@ public class LeasingApplicationServiceImpl implements LeasingApplicationService 
             details.setMonthlyPaymentAmount(Double.parseDouble(df.format((details.getVehicleDetails().getCarPrice() - details.getInitialPayment()) / details.getLeasingPeriod())));
             leasingApplicationRepository.save(details);
             log.info("Leasing application with id={} submitted", details.getId());
-            return new ApplicationResponse(modelMapper.map(details.getVehicleDetails(), VehicleDetails.class), details.getStatus());
+            return ApplicationResponse.builder().vehicleDetails(modelMapper.map(details.getVehicleDetails(), VehicleDetails.class)).status(details.getStatus()).build();
         } else {
             throw new RuleNotFoundException(HttpStatus.NOT_FOUND, messages.getMessage("leasingApplication.ruleNotFound", null, Locale.getDefault()));
         }

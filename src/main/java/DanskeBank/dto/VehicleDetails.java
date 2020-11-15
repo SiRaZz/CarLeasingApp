@@ -9,25 +9,23 @@ import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class VehicleDetails {
 
-    private Long id;
+    private final Long id;
 
-    private String vinNumber;
+    private final String vinNumber;
 
-    private String manufacturer;
+    private final String manufacturer;
 
-    private String model;
+    private final String model;
 
-    private Date productionDate;
+    private final Date productionDate;
 
-    private double carPrice;
+    private final double carPrice;
 
-    private boolean newCar;
+    private final boolean newCar;
 
-    private Long enginePower;
+    private final Long enginePower;
 
 
 }

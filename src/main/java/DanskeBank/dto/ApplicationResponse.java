@@ -1,17 +1,14 @@
 package DanskeBank.dto;
 
 import DanskeBank.enums.LeasingApplicationStatusEnum;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ApplicationResponse {
 
-    private VehicleDetails vehicleDetails;
+    private final VehicleDetails vehicleDetails;
 
-    private LeasingApplicationStatusEnum status;
-
-    public ApplicationResponse(VehicleDetails vehicleDetails, LeasingApplicationStatusEnum status) {
-        this.vehicleDetails = vehicleDetails;
-        this.status = status;
-    }
+    private final LeasingApplicationStatusEnum status;
 }

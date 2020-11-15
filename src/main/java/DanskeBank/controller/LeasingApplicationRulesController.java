@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/leasing")
-public class LeasingApplicationController {
+@RequestMapping("/rules")
+public class LeasingApplicationRulesController {
 
     @Autowired
     LeasingApplicationService leasingApplicationService;
@@ -26,21 +26,15 @@ public class LeasingApplicationController {
     @Autowired
     LeasingApplicationRulesService rulesService;
 
-    @PostMapping("/submit")
-    public ApplicationResponse submitLeasingApplication(@RequestBody LeasingApplicationDetails details) {
-        return leasingApplicationService.submit(details);
+    @PostMapping("/updateRule")
+    public LeasingApplicationRule updateLeasingApplicationRule(@RequestBody LeasingApplicationRule rule) throws RuleNotFoundException {
+        return rulesService.updateRule(rule);
     }
 
-    @GetMapping("/status/{personCode}")
-    public List<LeasingApplicationDetails> getApplicationStatusByPersonCode(@PathVariable String personCode) throws PersonNotFoundException, LeasingApplicationFoundException {
-             return leasingApplicationService.getApplicationStatusByPersonCode(personCode);
+    @PostMapping("/deleteRule/{ruleName}")
+    public ResponseEntity<?> updateLeasingApplicationRule(@PathVariable String ruleName) throws RuleNotFoundException {
+        rulesService.deleteRuleByName(ruleName);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @GetMapping("/getLog")
-    public List<HttpTrace> getLogging()  {
-        return leasingApplicationService.getLog();
-    }
-
-
 
 }

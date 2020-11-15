@@ -7,16 +7,16 @@ import lombok.Data;
 @Builder
 public class PersonDetails {
 
-    private Long id;
+    private final Long id;
 
-    private String personCode;
+    private final String personCode;
 
-    private String firstName;
+    private final String firstName;
 
-    private String lastName;
+    private final String lastName;
 
-    private String workPlace;
+    private final String workPlace;
 
-    private double monthlyIncome;
+    private final double monthlyIncome;
 
 }

@@ -55,6 +55,24 @@ public class LeasingApplicationRulesServiceTest {
     }
 
     @Test
+    public void should_not_find_rule_for_delete() {
+        LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("randomName")
+                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").validTo(null).build();
+        rulesRepository.save(rule1);
+        String name = "randomName1";
+        rulesService.deleteRuleByName(name);
+    }
+
+    @Test
+    public void should_delete_rule_by_name() {
+        LeasingApplicationRulesJpa rule1 = LeasingApplicationRulesJpa.builder().ruleName("randomName")
+                .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").validTo(null).build();
+        rulesRepository.save(rule1);
+        String name = "randomName";
+        rulesService.deleteRuleByName(name);
+    }
+
+    @Test
     public void should_throw_exception_updating_rule() {
         LeasingApplicationRule rule1 = LeasingApplicationRule.builder().ruleName("randomName")
                 .leasingApplicationRuleType(LeasingApplicationRuleType.String).value("100").validTo(null).build();
